@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: QR Genarator Deploy to GitHub Pages
 
 on:
   push:
@@ -17,7 +17,20 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Update next.config.mjs for static export
+        run: |
+          echo '/** @type {import("next").NextConfig} */
+          const nextConfig = {
+            output: "export",
+            basePath: "/qr-code-generator",
+            images: {
+              unoptimized: true,
+            },
+          };
+          
+          export default nextConfig;' > next.config.mjs
 
       - name: Build
         run: npm run build
